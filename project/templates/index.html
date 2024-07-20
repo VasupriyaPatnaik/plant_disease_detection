@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaf Disease Detection</title>
+    <link rel="stylesheet" href="test.css">
+</head>
+<body>
+    <div class="background">
+        <div class="container">
+            <h1>Plant Disease Classifier</h1>
+            <p>Upload an image to classify it as Healthy, Powdery, or Rust</p>
+            <form action="/predict" method="post" enctype="multipart/form-data">
+                <input type="file" id="file-input" name="file" accept="image/*" required>
+                <button type="submit" class="predict-btn">Predict Leaf Disease</button>
+            </form>
+        </div>
+        <div id="result-section">
+            <!-- Result will be displayed here -->
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Plant Disease Classifier. All rights reserved.</p>
+        <p>Contact: <a href="mailto:support@plantclassifier.com">support@plantclassifier.com</a></p>
+    </footer>
+</body>
+</html>
