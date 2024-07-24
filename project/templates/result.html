@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaf Disease Detection Result</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+        }
+        
+        .background {
+            background-image: url('leaf_background.jpg'); 
+            background-size: cover;
+            background-position: center;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            color: #fff;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .upload-section {
+            margin-bottom: 20px;
+        }
+        
+        input[type="file"] {
+            margin-right: 10px;
+            padding: 8px;
+            background-color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #000;
+            font-size: 1em;
+        }
+        
+        .predict-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 1em;
+        }
+        
+        .predict-btn:hover {
+            background-color: #45a049;
+        }
+        
+        .result-image-section {
+            margin: 20px 0;
+        }
+        
+        .result-image-section h2 {
+            margin-bottom: 10px;
+        }
+        
+        #uploaded-image {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .result {
+            margin-bottom: 30px;
+        }
+        
+        .result p {
+            font-size: 18px;
+            color: #bbb; 
+            margin: 10px 0;
+        }
+        
+        .image-section {
+            margin-bottom: 30px;
+        }
+        
+        .image-section img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-section {
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: #ff6347;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff6347;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-btn:hover {
+            background-color: #e6533b;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+        
+        footer a {
+            color: #28a745;
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="background">
+        <div class="container">
+            <h1>Classification Result</h1>
+            <div class="upload-section">
+                <form action="/predict" method="post" enctype="multipart/form-data">
+                    <input type="file" id="file-input" name="file" accept="image/*" required>
+                    <button type="submit" class="predict-btn">Predict Leaf Disease</button>
+                </form>
+            </div>
+            <div class="result">
+                <p><strong>Prediction:</strong> {{ prediction }}</p>
+                <p><strong>Probabilities:</strong> {{ probabilities }}</p>
+            </div>
+            
+            <div class="image-section">
+                <img src="{{ image }}" alt="Uploaded Image">
+            </div>
+            <a href="/" class="back-btn">Classify Another Image</a>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Plant Disease Classifier. All rights reserved.</p>
+        <p>Contact: <a href="mailto:support@plantclassifier.com">support@plantclassifier.com</a></p>
+    </footer>
+</body>
+</html>
