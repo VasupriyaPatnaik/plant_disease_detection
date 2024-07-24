@@ -1,6 +1,6 @@
 # plant_disease_detection
 
-codespace name: special-pancake 
+codespace name: ----
 
 Terminal-
 step-1: load model.h5 //
