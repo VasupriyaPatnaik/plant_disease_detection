@@ -9,5 +9,7 @@ step-3: open cv installations //
         [pip install -r requirements.txt]
         [pip install opencv-python]
         [pip install opencv-python-headless]
+        [sudo apt update]
+        [sudo apt install libopencv-dev python3-opencv]
 step-4:running app //
         [python app.py]
