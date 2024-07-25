@@ -3,116 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaf Disease Detection</title>
+    <title>Plant Disease Classifier</title>
     <style>
-        body, html {
+        * {
             margin: 0;
             padding: 0;
-            height: 100%;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            box-sizing: border-box;
+            zoom: 1;
         }
 
-        .background {
-            background-image: url('leaf_background.jpg'); 
-            background-size: cover;
-            background-position: center;
-            height: 100%;
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100 vh;
+            margin: 0;
+            padding: 0;
         }
 
         .container {
-            background-color: rgba(0, 0, 0, 0.7); 
-            padding: 20px;
-            border-radius: 10px;
             text-align: center;
-            width: 80%;
-            max-width: 500px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            color: #fff;
+            background-color: #fff;
+            padding: 30 px;
+            border-radius: 10 px;
+            box-shadow: 0 0 10 px rgba (0, 0, 0, 0.1);
+            width: 80 %;
+            max-width: 600 px;
         }
 
         h1 {
-            margin-bottom: 20px;
-            font-size: 1.8em;
+            margin-bottom: 20 px;
+            color: #333;
         }
 
         p {
-            margin-bottom: 30px;
-            color: #bbb;
+            margin-bottom: 30 px;
+            color: #666;
         }
 
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .upload-section {
+            margin-bottom: 30px;
         }
 
         input[type="file"] {
-            margin-bottom: 20px;
-            padding: 8px;
-            background-color: #ffffff;
-            border: none;
-            border-radius: 5px;
+            padding: 10 px;
+            border: 2 px solid #ddd;
+            border-radius: 5 px;
+            margin-bottom: 20 px;
             cursor: pointer;
-            color: #000;
-            font-size: 1em;
         }
 
-        .predict-btn {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
+        button {
+            padding: 10 px 20 px;
             border: none;
-            border-radius: 5px;
+            border-radius: 5 px;
+            background-color: #28a745;
+            color: #fff;
+            font-size: 16 px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 1em;
+            transition: background-color 0.3 s ease;
         }
 
-        .predict-btn:hover {
-            background-color: #45a049;
+        button:hover {
+            background-color: #218838;
+        }
+
+        #result-section {
+            margin-top: 20 px;
+            font-size: 18 px;
+            color: #333;
         }
 
         footer {
-            text-align: center;
-            padding: 10px 0;
-            background-color: #222;
-            color: #fff;
             position: absolute;
-            width: 100%;
             bottom: 0;
+            width: 100 %;
+            background-color: #333;
+            color: #fff;
+            padding: 10 px 0;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 5 px 0;
         }
 
         footer a {
-            color: #4CAF50;
+            color: #fff;
             text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="background">
-        <div class="container">
-            <h1>Plant Disease Classifier</h1>
-            <p>Upload an image to classify it as Healthy, Powdery, or Rust</p>
+    <div class="container">
+        <h1>Plant Disease Classifier</h1>
+        <p>Upload an image to classify it as Healthy, Powdery, or Rust.</p>
+        
+        <div class="upload-section">
             <form action="/predict" method="post" enctype="multipart/form-data">
-                <input type="file" id="file-input" name="file" accept="image/*" required>
-                <button type="submit" class="predict-btn">Predict Leaf Disease</button>
+                <input type="file" name="file" accept="image/*" required>
+                <button type="submit">Upload and Classify</button>
             </form>
         </div>
+        
         <div id="result-section">
-            <!-- Result will be displayed here -->
+            <!-- Result will be displayed here dynamically -->
+            {% if prediction %}
+                <h2>Prediction: {{ prediction }}</h2>
+                <p>{{ probabilities }}</p>
+                <img src="{{ image }}" alt="Uploaded Image" style="max-width: 100 %; height: auto;">
+            {% endif %}
         </div>
     </div>
+
+    <!-- Additional Features -->
     <footer>
         <p>&copy; 2024 Plant Disease Classifier. All rights reserved.</p>
         <p>Contact: <a href="mailto:support@plantclassifier.com">support@plantclassifier.com</a></p>
     </footer>
 </body>
 </html>
+
