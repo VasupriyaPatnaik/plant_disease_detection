@@ -3,169 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaf Disease Detection Result</title>
+    <title>Plant Disease Classifier - Result</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
-        body, html {
+        * {
             margin: 0;
             padding: 0;
-            height: 100%;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            box-sizing: border-box;
+            zoom: 90 %;
         }
-        
-        .background {
-            background-image: url('leaf_background.jpg'); 
-            background-size: cover;
-            background-position: center;
-            height: 100%;
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa; /* Light grayish background */
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100 vh;
+            margin: 0;
+            padding: 0;
         }
-        
+
         .container {
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 10px;
             text-align: center;
-            width: 80%;
-            max-width: 600px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            color: #fff;
+            background-color: #fff; /* White container background */
+            padding: 30 px;
+            border-radius: 10 px;
+            box-shadow: 0 0 10 px rgba (0, 0, 0, 0.1);
+            width: 80 %;
+            max-width: 600 px;
         }
-        
+
         h1 {
-            margin-bottom: 20px;
-            font-size: 1.8em;
+            margin-bottom: 20 px;
+            color: #343a40; /* Dark gray from Bootstrap */
+            font-size: 24 px;
+            font-weight: bold;
         }
-        
-        .upload-section {
-            margin-bottom: 20px;
-        }
-        
-        input[type="file"] {
-            margin-right: 10px;
-            padding: 8px;
-            background-color: #ffffff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            color: #000;
-            font-size: 1em;
-        }
-        
-        .predict-btn {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 1em;
-        }
-        
-        .predict-btn:hover {
-            background-color: #45a049;
-        }
-        
-        .result-image-section {
-            margin: 20px 0;
-        }
-        
-        .result-image-section h2 {
-            margin-bottom: 10px;
-        }
-        
-        #uploaded-image {
-            max-width: 100%;
-            height: auto;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        
-        .result {
-            margin-bottom: 30px;
-        }
-        
-        .result p {
-            font-size: 18px;
-            color: #bbb; 
-            margin: 10px 0;
-        }
-        
-        .image-section {
-            margin-bottom: 30px;
-        }
-        
-        .image-section img {
-            max-width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        
+
         .result-section {
-            font-size: 1.2em;
-            margin-top: 20px;
-            color: #ff6347;
+            margin-top: 30 px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        
-        .back-btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #ff6347;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        
-        .back-btn:hover {
-            background-color: #e6533b;
-        }
-        
-        footer {
+
+        .result-info {
+            background-color: #e9ecef; /* Light gray background */
+            padding: 15 px;
+            border-radius: 8 px;
+            box-shadow: 0 0 8 px rgba (0, 0, 0, 0.1);
+            margin-bottom: 20 px;
             text-align: center;
-            margin-top: 20px;
-            color: #666;
+            width: 100 %;
+            max-width: 500 px;
         }
-        
+
+        .result-info h2 {
+            color: #343a40; /* Dark gray from Bootstrap */
+            font-size: 20 px;
+            margin-bottom: 10 px;
+        }
+
+        .result-info p {
+            color: #6c757d; /* Gray from Bootstrap */
+            font-size: 16 px;
+            line-height: 1.5;
+        }
+
+        .result-image {
+            width: 100 %;
+            max-width: 400 px;
+            border-radius: 8 px;
+            box-shadow: 0 0 10 px rgba (0, 0, 0, 0.1);
+            margin-bottom: 20 px;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 0;
+            width: 100 %;
+            background-color: #343a40; /* Dark gray from Bootstrap */
+            color: #fff;
+            padding: 10 px 0;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 5 px 0;
+            font-size: 14 px;
+        }
+
         footer a {
-            color: #28a745;
+            color: #fff;
             text-decoration: none;
-        }
-        
-        footer a:hover {
-            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="background">
-        <div class="container">
-            <h1>Classification Result</h1>
-            <div class="upload-section">
-                <form action="/predict" method="post" enctype="multipart/form-data">
-                    <input type="file" id="file-input" name="file" accept="image/*" required>
-                    <button type="submit" class="predict-btn">Predict Leaf Disease</button>
-                </form>
-            </div>
-            <div class="result">
-                <p><strong>Prediction:</strong> {{ prediction }}</p>
-                <p><strong>Probabilities:</strong> {{ probabilities }}</p>
-            </div>
+    <div class="container">
+        <h1 class="mt-3 mb-4">Plant Disease Classifier - Result</h1>
+        
+        <div class="result-section">
+            <img src="{{ image }}" alt="Uploaded Image" class="result-image">
             
-            <div class="image-section">
-                <img src="{{ image }}" alt="Uploaded Image">
+            <div class="result-info">
+                <h2 class="mb-3">Prediction: <strong>{{ prediction }}</strong></h2>
+                <p style="font-size: medium;">{{ probabilities }}</p>
             </div>
-            <a href="/" class="back-btn">Classify Another Image</a>
         </div>
     </div>
+
+    <!-- Additional Features -->
     <footer>
         <p>&copy; 2024 Plant Disease Classifier. All rights reserved.</p>
         <p>Contact: <a href="mailto:support@plantclassifier.com">support@plantclassifier.com</a></p>
     </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
