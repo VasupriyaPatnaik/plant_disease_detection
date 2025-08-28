@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plant Disease Classifier - Result</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: #0f1622;
+      --text: #ecf4ff;
+      --muted: #7a8ba6;
+      --primary: #5de07a;
+      --accent: #38c458;
+      --progress-bg: rgba(255,255,255,0.05);
+      --progress-fill: #5de07a;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: var(--card);
+      border-radius: 15px;
+      padding: 40px;
+      max-width: 700px;
+      width: 100%;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+      text-align: center;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+
+    .result-section {
+      margin-top: 25px;
+    }
+
+    .result-image {
+      width: 100%;
+      max-width: 350px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+      margin-bottom: 25px;
+      transition: transform 0.3s ease;
+    }
+
+    .result-image:hover {
+      transform: scale(1.05);
+    }
+
+    .result-info {
+      background: #111828;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.05);
+      margin: auto;
+      max-width: 500px;
+      color: var(--text);
+    }
+
+    .result-info h2 {
+      font-size: 22px;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .prediction-label {
+      background: rgba(93, 224, 122, 0.1);
+      color: var(--primary);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 1.1em;
+    }
+
+    .progress-bar-custom {
+      height: 18px;
+      border-radius: 6px;
+      transition: width 0.5s ease;
+    }
+
+    .progress-container {
+      background: var(--progress-bg);
+      border-radius: 6px;
+      height: 18px;
+      width: 100%;
+      margin: 4px 0;
+      position: relative;
+    }
+
+    .progress-fill {
+      background: var(--progress-fill);
+      height: 100%;
+      border-radius: 6px;
+    }
+
+    footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+      color: var(--accent);
+    }
+
+    .btn-custom {
+      font-weight: 600;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #04240b;
+      padding: 10px 20px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 15px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-custom:hover {
+      background: var(--accent);
+      transform: scale(1.05);
+      color: #04240b;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h4 { color: var(--primary); margin-bottom: 8px; }
+    p { color: var(--text); }
+    span { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌿 Plant Disease Detector - Result</h1>
+
+    <div class="result-section">
+      <img src="{{ image }}" alt="Uploaded Image" class="result-image">
+
+      <div class="result-info">
+        <h2>
+          Prediction:
+          <span class="prediction-label">{{ prediction }}</span>
+        </h2>
+
+        <!-- Probability values -->
+        <div style="margin-top: 15px; text-align:left;">
+          <h4>Probabilities:</h4>
+          <ul style="list-style:none; padding-left:0;">
+            {% for label, prob_val, prob_pct in probs_list %}
+              <li><span style="font-weight:600; color:var(--primary);">{{ label }}:</span> <span>{{ '%.2f' % prob_val }}</span></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <!-- Suggested Remedy -->
+        <div style="margin-top:18px; text-align:left;">
+          <h4>Suggested Remedy:</h4>
+          {% if prediction == 'Healthy' %}
+            <p>Your plant appears healthy! Keep monitoring and maintain good care practices.</p>
+          {% elif prediction == 'Powdery' %}
+            <p>Powdery mildew detected. Remove affected leaves, improve air circulation, and consider using a fungicide.</p>
+          {% elif prediction == 'Rust' %}
+            <p>Rust disease detected. Remove infected leaves, avoid overhead watering, and apply appropriate fungicide.</p>
+          {% else %}
+            <p>Unable to provide remedy. Please consult a plant expert.</p>
+          {% endif %}
+        </div>
+
+        <a href="/" class="btn-custom">← Back to Home</a>
+      </div>
+    </div>
+
+    <footer>
+      © {{ current_year }} Plant Disease Detection | <a href="/">Home</a>
+    </footer>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
