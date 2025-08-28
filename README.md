@@ -1,11 +1,11 @@
 
-## Plant Disease Detection Web App
+## 🌱 Plant Disease Detection Web App
 
-A web application to detect plant leaf diseases (Healthy, Powdery, Rust) using a deep learning model.
+A web application to detect plant leaf diseases (Healthy, Powdery, Rust) using a deep learning model. 🤖🍃
 
 ---
 
-### Features
+### ✨ Features
 - Upload a leaf image and get instant disease prediction.
 - Shows probability for each class.
 - Displays suggested remedy based on the prediction.
@@ -13,7 +13,7 @@ A web application to detect plant leaf diseases (Healthy, Powdery, Rust) using a
 
 ---
 
-### Setup Instructions
+### ⚙️ Setup Instructions
 
 1. **Clone the repository**
         ```
@@ -41,31 +41,31 @@ A web application to detect plant leaf diseases (Healthy, Powdery, Rust) using a
         ```
         python app.py
         ```
-        - Open your browser and go to [http://127.0.0.1:5000](http://127.0.0.1:5000)
+        - 🌐 Open your browser and go to [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 ---
 
-### Usage
+### 📝 Usage
 - Upload a leaf image (JPG/PNG, max 10MB).
 - Click **Predict** to see the result.
 - The app will show the predicted class, probabilities, and a suggested remedy for the detected disease.
 
 ---
 
-### Limitations
+### ⚠️ Limitations
 - The model is trained only on leaf images. If you upload a non-leaf image, it will still predict one of the disease classes.
 - For best results, use clear, well-lit images of a single leaf.
 - The app does not reject non-leaf images automatically.
 
 ---
 
-### Improving the Model
+### 🚀 Improving the Model
 - To handle non-leaf images, retrain the model with an additional "Unknown" or "Not a leaf" class.
 - You can also use a pre-trained classifier to filter out non-leaf images before prediction.
 
 ---
 
-### Folder Structure
+### 📁 Folder Structure
 ```
 plant_disease_detection/
 ├── app.py
@@ -78,7 +78,4 @@ plant_disease_detection/
 │   └── result.html
 ```
 
----
-
-### License
-MIT
+🌿 Happy Plant Caring! Detect, Prevent, and Keep Your Leaves Healthy! 🍃💚
