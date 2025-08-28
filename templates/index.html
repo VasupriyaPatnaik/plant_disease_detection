@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Plant Disease Detection</title>
+    <link rel="icon" href="{{ url_for('static', filename='logo.svg') }}" />
+    <meta name="description"
+        content="Upload a leaf image and detect plant diseases instantly with a deep learning model." />
+    <style>
+        :root {
+            --bg: #0b1220;
+            --card: #0f1622;
+            --muted: #9fb0cf;
+            --text: #ecf4ff;
+            --primary: #5de07a;
+            --accent: #38c458;
+            --ring: rgba(93, 224, 122, 0.18);
+            --gradient-start: rgba(93, 224, 122, .08);
+            --gradient-mid: rgba(86, 151, 255, .06);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
+        }
+
+        body {
+            background:
+                radial-gradient(1200px 600px at 80% -10%, var(--gradient-start), transparent),
+                radial-gradient(1000px 500px at -10% 20%, var(--gradient-mid), transparent),
+                var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding: 28px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px
+        }
+
+        .brand {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.2rem
+        }
+
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--primary), rgba(93, 224, 122, 0.12))
+        }
+
+        .brand-logo svg {
+            width: 22px;
+            height: 22px
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.15fr .85fr;
+            gap: 32px;
+            align-items: start
+        }
+
+        @media (max-width:900px) {
+            .hero {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border-radius: 20px;
+            padding: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 12px 40px rgba(2, 6, 23, 0.7);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 45px rgba(2, 6, 23, 0.8);
+        }
+
+        h1 {
+            font-size: clamp(28px, 4.5vw, 42px);
+            margin: 6px 0 12px;
+            line-height: 1.2;
+        }
+
+        .sub {
+            color: var(--muted);
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .dropzone {
+            border: 2px dashed rgba(255, 255, 255, 0.08);
+            padding: 28px;
+            border-radius: 16px;
+            text-align: center;
+            cursor: default;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.01);
+            user-select: none;
+            margin-bottom: 20px;
+        }
+
+        .dropzone.dragover {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 8px var(--ring);
+            background: rgba(93, 224, 122, 0.02);
+            transform: scale(1.01);
+        }
+
+        .dz-cta {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 15px;
+            margin-top: 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap
+        }
+
+        .btn {
+            background: var(--primary);
+            color: #04240b;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(.4, 2, .3, 1), box-shadow 0.2s cubic-bezier(.4, 2, .3, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(93, 224, 122, 0.10);
+        }
+
+        .btn:hover {
+            background: var(--accent);
+            transform: translateY(-4px) scale(1.04);
+            box-shadow: 0 8px 24px rgba(93, 224, 122, 0.25);
+            filter: brightness(1.08);
+        }
+
+        .btn.secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .preview img {
+            max-width: 240px;
+            max-height: 180px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            object-fit: cover;
+        }
+
+        .file-pill {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 14px;
+            color: var(--muted);
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .predict-wrap {
+            text-align: center;
+            margin: 24px 0;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .results {
+            margin-top: 24px;
+            display: grid;
+            gap: 16px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .small-muted {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        footer {
+            margin-top: 40px;
+            color: var(--muted);
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--accent);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(4, 36, 11, 0.3);
+            border-radius: 50%;
+            border-top-color: #04240b;
+            animation: spin 0.8s ease infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="brand">
+                <div class="brand-logo" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 21c4.97-3.2 8-6.5 8-10a8 8 0 1 0-16 0c0 3.5 3.03 6.8 8 10Z" stroke="currentColor"
+                            stroke-width="1.5" />
+                    </svg>
+                </div>
+                <div>Plant Disease Detection</div>
+            </div>
+            <nav><a href="https://github.com/VasupriyaPatnaik/plant_disease_detection" target="_blank"
+                    rel="noopener">GitHub</a></nav>
+        </header>
+
+        <section class="hero">
+            <!-- LEFT: Upload & results -->
+            <div>
+                <div class="card">
+                    <h1>Detect plant diseases in <span style="color:var(--primary)">seconds</span></h1>
+                    <p class="sub">Select or drop a leaf image, preview it and then click <strong>Predict</strong> to
+                        run the model.</p>
+
+                    <form id="uploadForm" action="/predict" method="POST" enctype="multipart/form-data" novalidate>
+                        <!-- Hidden file input -->
+                        <input id="file" name="file" type="file" accept="image/*" hidden />
+
+                        <!-- Drop zone (no click handler to avoid duplicate pickers) -->
+                        <div id="dropzone" class="dropzone" role="region"
+                            aria-label="Drop image here or use the Choose Image button">
+                            <p class="dz-cta">Drag & drop an image here</p>
+                            <p class="muted">or use the button below to select</p>
+
+                            <div class="controls" aria-hidden="false">
+                                <!-- Only this button opens file picker -->
+                                <button id="chooseBtn" type="button" class="btn secondary">Choose Image</button>
+                                <button id="clearBtn" type="button" class="btn secondary"
+                                    style="display:none">Remove</button>
+                            </div>
+
+                            <p class="small-muted" style="margin-top:16px">Accepted: JPG, PNG. Recommended max: 5–10MB.
+                            </p>
+                        </div>
+
+                        <!-- Preview -->
+                        <div id="preview" class="preview" style="display:none" aria-live="polite">
+                            <img id="previewImg" alt="Selected leaf preview" />
+                            <div>
+                                <div class="file-pill" id="fileName"></div>
+                                <div class="small-muted" style="margin-top:10px">If this is the wrong image, click
+                                    Remove.</div>
+                            </div>
+                        </div>
+
+                        <!-- Predict button appears only after a valid image is selected -->
+                        <div class="predict-wrap" id="predictWrap" style="display:none">
+                            <button id="predictBtn" type="submit" class="btn">
+                                <span id="btnText">Predict</span>
+                                <span id="btnSpinner" class="spinner" style="display:none"></span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Server-side messages (Flask flash) -->
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                    <div style="margin-top:16px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 12px;"
+                        class="small-muted">{{ messages[0] }}</div>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+
+            <!-- RIGHT: tips panel -->
+            <aside>
+                <div class="card">
+                    <h3>Tips for best results</h3>
+                    <ul style="margin:12px 0 0;padding-left:20px;color:var(--muted);line-height:1.7">
+                        <li>Use sharp, well-lit photos (avoid blur or heavy shadows).</li>
+                        <li>Include a single leaf in frame against a plain background.</li>
+                        <li>Center the diseased region if visible.</li>
+                        <li>Capture both sides of the leaf if possible.</li>
+                        <li>Avoid including other plants or objects in the image.</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="margin-top: 20px;">
+                    <h3>How it works</h3>
+                    <p style="color:var(--muted); margin:12px 0 0;">
+                        Our deep learning model analyzes leaf images to detect common plant diseases with high accuracy.
+                        The system provides diagnosis and suggested remedies to help maintain plant health.
+                    </p>
+                </div>
+            </aside>
+        </section>
+
+        <footer>
+            <div>© <span id="year">2023</span> Plant Disease Detection</div>
+            <div>Made with <span style="color:#e06c75">♥</span> for a greener planet</div>
+            <div><a href="/">Home</a> | <a href="https://github.com/VasupriyaPatnaik/plant_disease_detection"
+                    target="_blank" rel="noopener">GitHub</a></div>
+        </footer>
+    </div>
+
+    <script>
+        // Elements
+        const chooseBtn = document.getElementById('chooseBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const fileInput = document.getElementById('file');
+        const dropzone = document.getElementById('dropzone');
+        const preview = document.getElementById('preview');
+        const previewImg = document.getElementById('previewImg');
+        const fileName = document.getElementById('fileName');
+        const predictWrap = document.getElementById('predictWrap');
+        const uploadForm = document.getElementById('uploadForm');
+        const btnText = document.getElementById('btnText');
+        const btnSpinner = document.getElementById('btnSpinner');
+
+        // Set year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Only the Choose Image button triggers the file picker (to avoid duplicates)
+        chooseBtn.addEventListener('click', () => {
+            fileInput.click(); // This line was missing - FIXED
+        });
+
+        // Make the entire dropzone clickable to trigger file selection
+        dropzone.addEventListener('click', (e) => {
+            // Only trigger if the click wasn't on a button inside the dropzone
+            if (!e.target.closest('button')) {
+                fileInput.click();
+            }
+        });
+
+        // Drag & drop: allow dropping files but do NOT trigger chooseBtn click
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+        });
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+            const f = e.dataTransfer.files?.[0];
+            handleFileSelection(f);
+        });
+
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            const f = e.target.files?.[0];
+            handleFileSelection(f);
+        });
+
+        // Remove currently selected file
+        clearBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent triggering the dropzone click event
+            fileInput.value = ''; // clear selection
+            preview.style.display = 'none';
+            predictWrap.style.display = 'none';
+            clearBtn.style.display = 'none';
+            fileName.textContent = '';
+            previewImg.src = '';
+        });
+
+        // Validate & preview selected file
+        function handleFileSelection(file) {
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                alert('Please select a valid image file (JPG/PNG).');
+                fileInput.value = '';
+                return;
+            }
+
+            // Check file size (max 10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File size exceeds 10MB. Please choose a smaller image.');
+                fileInput.value = '';
+                return;
+            }
+
+            // Show preview
+            fileName.textContent = file.name;
+            previewImg.src = URL.createObjectURL(file);
+            preview.style.display = 'flex';
+            predictWrap.style.display = 'block';
+            clearBtn.style.display = 'inline-block';
+        }
+
+        // Final form submit guard: ensure file present
+        uploadForm.addEventListener('submit', (e) => {
+            const f = fileInput.files?.[0];
+            if (!f) {
+                e.preventDefault();
+                alert('Please choose an image before predicting.');
+                return;
+            }
+
+            // Show loading state
+            btnText.textContent = 'Predicting...';
+            btnSpinner.style.display = 'inline-block';
+            document.getElementById('predictBtn').disabled = true;
+
+            // Form will submit to /prediction route and redirect to results page
+        });
+
+        // Accessibility: allow keyboard dropzone focus styling
+        dropzone.addEventListener('focusin', () => dropzone.classList.add('dragover'));
+        dropzone.addEventListener('focusout', () => dropzone.classList.remove('dragover'));
+
+        // Add tabindex to make dropzone focusable for accessibility
+        dropzone.setAttribute('tabindex', '0');
+    </script>
+</body>
+
+</html>
